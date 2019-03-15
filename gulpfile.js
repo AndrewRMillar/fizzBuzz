@@ -1,8 +1,6 @@
 const gulp = require('gulp');
 const uglify = require('gulp-uglify');
-const concat = require('gulp-concat');
 const cleanCSS = require('gulp-clean-css');
-const imagemin = require('gulp-imagemin');
 const babel = require('gulp-babel');
 const browserSync = require('browser-sync').create();
 const sourcemaps = require('gulp-sourcemaps');
@@ -11,46 +9,18 @@ const lec = require('gulp-line-ending-corrector');
 
 // var pipeline = require('readable-stream').pipeline; // getting error
 
-// Copy all image files from base dir
-gulp.task('copyFav', function(done) {
-  gulp.src(['./src/*.ico', './src/*.png'])
-    .pipe(gulp.dest('dist'))
-    .pipe(browserSync.stream());
-  done();
-});
-
 // Copy all the text files from base dir
 gulp.task('copyfiles', function(done) {
-  gulp.src(['/src/*.svg', './src/*.html', './src/site.webmanifest', './src/*.xml'])
+  gulp.src(['./src/*.html'])
     .pipe(lec())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('./dist'))
     .pipe(browserSync.stream());
   done();
 });
-
-
-// Optimize images
-gulp.task('imagemin', function(done) {
-  gulp.src('src/img/*.*')
-    .pipe(imagemin())
-    .pipe(lec())
-    .pipe(gulp.dest('dist/img'))
-    .pipe(browserSync.stream());
-  done();
-});
-
-// Copy audio files
-gulp.task('copysounds', function(done) {
-  gulp.src('./src/sounds/*.*')
-    .pipe(gulp.dest('./dist/sounds'))
-    .pipe(browserSync.stream());
-  done();
-}); 
 
 // Concat/Minify css
 gulp.task('minify-css', function(done) {
   gulp.src('src/css/*.css')
-    .pipe(concat('/css/style.css'))
     .pipe(sourcemaps.init({loadMaps: true}))
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
@@ -59,7 +29,7 @@ gulp.task('minify-css', function(done) {
     .pipe(cleanCSS({compatibility: 'ie8'}))
     .pipe(sourcemaps.write())
     .pipe(lec())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('dist/css'))
     .pipe(browserSync.stream());
   done();
 });
@@ -71,7 +41,6 @@ gulp.task('minify-js', function(done) {
     .pipe(babel({
       presets: ['@babel/env']
     }))
-    .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(sourcemaps.write())
     .pipe(lec())
@@ -93,4 +62,4 @@ gulp.task('watch', function() {
   gulp.watch('src/css/*.css', gulp.parallel('minify-css')).on('change', browserSync.reload);
 });
 
-gulp.task('default', gulp.series('copyfiles', 'copyFav', 'copysounds', 'imagemin', 'minify-css', 'minify-js'));
+gulp.task('default', gulp.series('copyfiles', 'minify-css', 'minify-js'));

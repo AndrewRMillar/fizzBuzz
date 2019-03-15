@@ -5,6 +5,9 @@ html, body {
   width: 100%;
   height: 100%;
 }
+p {
+  margin: .1rem;
+}
 
 main {
   display: flex;
@@ -12,4 +15,17 @@ main {
   justify-content: center;
   align-items: center;
   align-content: center;
+}
+
+.item {
+
+}
+
+.f-or-b {
+  background-color: blue;
+  color: white;
+}
+.fizzbuzz {
+  background-color: red;
+  color: white;
 }
